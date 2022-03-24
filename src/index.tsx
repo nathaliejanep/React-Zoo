@@ -1,19 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Animals } from './components/Animals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { InfoAnimal } from './components/InfoAnimal';
+import { Layout } from './components/Layout';
+import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/animals" element={<Animals />} />
-        <Route path="/animals/:id" element={<InfoAnimal />} />
+        <Route path="/" element={<Layout />} >
+          {/* tog bort app */}
+          <Route index element={<App />} />
+          <Route path="/animals" element={<Animals />} />
+          <Route path="/animals/:id" element={<InfoAnimal />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

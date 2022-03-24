@@ -2,33 +2,29 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Animal } from "../models/Animal";
-import { IAnimal } from "../models/IAnimal";
 
 export const Animals = () => {
     const [animals, setAnimals] = useState<Animal[]>([]);
 
     useEffect(() => {
-        getAnimals()
-    }, []);
-
-    function getAnimals() {
         axios.get('https://animals.azurewebsites.net/api/animals')
             .then((response) => {
-                console.log(response.data);
-                // let apiAnimals = response.data.map((animal: IAnimal) => {
-                //     return new Animal(animal.id, animal.name, animal.imageUrl, animal.isFed)
-                // })
+                if (!localStorage.getItem('lsAnimal')) {
+                    localStorage.setItem('lsAnimal', JSON.stringify(response.data));
+                }
                 setAnimals(response.data);
-            });
-    }
 
-    let AnimalList = animals.map((animal: IAnimal, i) => {
+            }).catch((error) => console.log(error));
+    }, []);
+
+    let AnimalList = animals.map((animal: Animal, i) => {
+        let animalLink = `/animals/${animal.id}`;
         return (
             <li key={i}>
-                <Link to={`/animals/${animal.id}`}>{animal.name}</Link>
+                <Link to={animalLink}>{animal.name}</Link>
             </li>
         )
-    })
+    });
 
     return (
         <ul>{AnimalList}</ul>

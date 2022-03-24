@@ -1,42 +1,56 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Animal } from "../models/Animal";
-import { IAnimal } from "../models/IAnimal";
+import { Button } from "./styles/Button";
 
 export const InfoAnimal = () => {
 
-    const [animal, setAnimal] = useState<Animal[]>([]);
+    // const [animal, setAnimal] = useState<Animal[]>([]);
     const [fed, setFed] = useState(false);
-
+    const [hungry, setHungry] = useState(false);
     let { id } = useParams();
-    console.log(`https://animals.azurewebsites.net/api/animals/${id}`);
 
-    useEffect(() => {
-        getAnimal();
-    }, []);
+    // useEffect(() => {
+    //     getAnimal();
+    // }, []);
 
-    // let lsAnimal = JSON.parse(localStorage.getItem('lsAnimal') || (''));
+    // function getAnimal() {
+    //     setAnimal(lsAnimal)
 
-    function getAnimal() {
-        axios.get(`https://animals.azurewebsites.net/api/animals/`)
-            .then((response) => {
-                setAnimal(response.data);
-                console.log(response.data);
+    //     axios.get(`https://animals.azurewebsites.net/api/animals/`)
+    //         .then((response) => {
+    //             setAnimal(response.data);
+    //             console.log(response.data);
+    //         })
+    //         .catch((error) => console.log(error));
+    // }
 
-                // localStorage.setItem('lsAnimal', JSON.stringify(response.data));
+    // if (!'lsAnimal') {
+    //     localStorage.setItem('lsAnimal', JSON.stringify(animal));
+    //     console.log("Works?");
+    // }
 
-            })
-            .catch((error) => console.log(error));
+    // localStorage.setItem('lsAnimal', JSON.stringify(animal));
+
+    let lsAnimal = JSON.parse(localStorage.getItem('lsAnimal') || (''));
+
+    const lessThan3HrAgo = (date: any) => {
+        const threeHr = 3 * 1000 * 60 * 60;
+        const threeHrAgo = Date.now() - threeHr;
+
+        return date > threeHrAgo;
     }
 
 
+    let AnimalInfo = lsAnimal.map((animal: Animal, i: number) => {
 
 
-
-    let AnimalInfo = animal.map((animal: IAnimal, i: number) => {
         if (i + 1 === +id!) {
-
+            console.log(lessThan3HrAgo(new Date(animal.lastFed)));
+            if (!lessThan3HrAgo(new Date(animal.lastFed))) {
+                animal.isFed = false;
+                // setHungry(true);
+            }
             return (
                 <>
                     <div key={i}>
@@ -45,7 +59,19 @@ export const InfoAnimal = () => {
                         <p>Last fed: {animal.lastFed}</p>
                         <img src={animal.imageUrl} alt="" width="300px" />
                         <p>{animal.shortDescription}</p>
-                        <button onClick={feedAnimal} >Feed {animal.name}</button>
+
+                        {animal.isFed === false &&
+                            <Button disabled={fed} onClick={feedAnimal} >
+                                Feed {animal.name}
+                            </Button>}
+
+                        {animal.isFed === true &&
+                            <>
+                                <p>Not hungry</p>
+                                <button disabled>
+                                    Feed {animal.name}
+                                </button>
+                            </>}
                     </div>
                 </>
             )
@@ -54,31 +80,35 @@ export const InfoAnimal = () => {
     })
 
     function feedAnimal() {
-        animal.map((animal: IAnimal, i: number) => {
+        let lsAnimal = JSON.parse(localStorage.getItem('lsAnimal') || (''));
+
+        // for (let i = 0; i < lsAnimal.length; i++) {
+        //     if (i + 1 === +id!) {
+        //         console.log(lsAnimal[i]);
+        //         let fed = lsAnimal[i].isFed = true
+        //         setFed(fed);
+        //         lsAnimal[i].lastFed = new Date();
+        //         // lsAnimal[i].isFed = true;
+        //         localStorage.setItem('lsAnimal', JSON.stringify(lsAnimal));
+        //     }
+        // } return (
+        //     <div>{AnimalInfo}</div>
+        // )
+
+        lsAnimal.map((animal: Animal, i: number) => {
             if (i + 1 === +id!) {
+                setFed(animal.isFed = true);
+                animal.lastFed = new Date();
 
-                let fed = animal.isFed = true
-                setFed(fed);
-                animal.lastFed = new Date()
-                // localStorage.setItem('lsAnimal', JSON.stringify(lsAnimal));
+                // let dateFed = animal.lastFed;
+                // dateFed.setHours(dateFed.getHours() - 3);
+                // console.log(dateFed);
             }
-
+            return <p>hej</p>//ändra varning
         })
-
+        localStorage.setItem('lsAnimal', JSON.stringify(lsAnimal));
     }
-
-
-
     return (
         <div>{AnimalInfo}</div>
     );
-
-    // let animalInfo = Object.entries(animal).map(([key, value]) => {
-    //     return (
-    //         <li key={key}>
-    //             {key}: {value}
-    //         </li>
-    //     );
-    // });
-    // console.log(animalInfo);
 }
