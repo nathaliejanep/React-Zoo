@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Animal } from "../models/Animal";
+import { Li } from "./styles/Li";
 
 export const Animals = () => {
     const [animals, setAnimals] = useState<Animal[]>([]);
@@ -20,9 +21,9 @@ export const Animals = () => {
     let AnimalList = animals.map((animal: Animal, i) => {
         let animalLink = `/animals/${animal.id}`;
         return (
-            <li key={i}>
+            <Li key={i}>
                 <Link to={animalLink}>{animal.name}</Link>
-            </li>
+            </Li>
         )
     });
 

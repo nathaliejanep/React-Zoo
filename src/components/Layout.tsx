@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
+import { Main } from "./styles/Main"
 import { StyledLi, StyledNav, StyledUl } from "./styles/Nav"
 
 export const Layout = () => {
@@ -17,12 +18,9 @@ export const Layout = () => {
                     </StyledUl>
                 </StyledNav>
             </header>
-            <main>
+            <Main>
                 <Outlet></Outlet>
-                <div>Kolumn 1</div>
-                <div>Kolumn 2</div>
-                <div>Kolumn 3</div>
-            </main>
+            </Main>
             <footer>
 
             </footer>
